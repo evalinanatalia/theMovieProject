@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.support.v7.widget.SearchView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import com.example.bri.themoviesproject.Adapter.MovieAdapter;
@@ -20,6 +21,7 @@ import com.example.bri.themoviesproject.Model.MovieModel;
 import com.example.bri.themoviesproject.Model.PageModel;
 import com.example.bri.themoviesproject.Retrofit.IMyAPI;
 import com.example.bri.themoviesproject.Retrofit.RetrofitClient;
+import com.example.bri.themoviesproject.Util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +37,10 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
     MoviesListingPresenter moviesPresenter;
     public IMyAPI iMyAPI = null;
     GridView rows;
+    ProgressBar progressBar;
     private Realm mRealm;
     List<MovieModel> pageModels = new ArrayList<>();
-    List<MovieModel> pageModelsSearch = new ArrayList<>();
+
     private final static String API_KEY = "3b561a9deada4994d60aa22b621966e9";
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
         iMyAPI = retrofit.create(IMyAPI.class);
 
         rows = (GridView) findViewById(R.id.rows);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_cyclic);
 
         rows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,8 +81,9 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                List<MovieModel> pageModelsSearch = new ArrayList<>();
                 for (MovieModel movieModel : pageModels) {
-                    if(movieModel.title.contains(s)) {
+                    if(movieModel.title.toLowerCase().contains(s.toLowerCase())) {
                         pageModelsSearch.add(movieModel);
                     }
 
@@ -147,19 +152,31 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
                 break;
 
         }
+        if (Utils.isConnected(this)) {
+//            if(Utils.isInternetAvailable()) {
+                pageModelCall.enqueue(new Callback<PageModel>() {
+                    @Override
+                    public void onResponse(Call<PageModel> call, Response<PageModel> response) {
+                        pageModels = response.body().getResults();
+                        displayData(pageModels);
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-        pageModelCall.enqueue(new Callback<PageModel>() {
-            @Override
-            public void onResponse(Call<PageModel> call, Response<PageModel> response) {
-                pageModels = response.body().getResults();
-                displayData(pageModels);
-            }
-
-            @Override
-            public void onFailure(Call<PageModel> call, Throwable t) {
-                Log.e("Error", t.toString());
-            }
-        });
+                    @Override
+                    public void onFailure(Call<PageModel> call, Throwable t) {
+//                    Log.e("Error", t.toString());
+                        Utils.getToastMessage(getBaseContext(), t.toString()).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+//            }else {
+//                progressBar.setVisibility(View.GONE);
+//                Utils.getToastMessage(this, "Network Disconnect").show();
+//            }
+        }else{
+            progressBar.setVisibility(View.GONE);
+            Utils.getToastMessage(this, "Network is not available").show();
+        }
     }
 
     private void displayData(List<MovieModel> movieModels) {

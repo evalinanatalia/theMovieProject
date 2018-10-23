@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.bri.themoviesproject.BuildConfig;
 import com.example.bri.themoviesproject.Model.MovieModel;
 import com.example.bri.themoviesproject.R;
 
@@ -57,12 +58,11 @@ public class MovieAdapter extends BaseAdapter {
                 TextView author= (TextView)view.findViewById(R.id.author);
                 ImageView imgView = (ImageView)view.findViewById(R.id.image_view);
 
-                String baseUrl = "https://image.tmdb.org/t/p/w500/";
                 title.setText(movies.get(i).getTitle().toString());
                 content.setText(movies.get(i).getRelease_date().toString());
                 author.setText(String.valueOf(movies.get(i).getOriginal_title()));
                 Glide.with(context)
-                        .load(baseUrl+""+movies.get(i).getPoster_path().toString())
+                        .load(BuildConfig.URL_BASE_IMAGE+""+movies.get(i).getPoster_path().toString())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imgView);
 

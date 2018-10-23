@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 //apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'realm-android'
 
@@ -20,6 +21,7 @@ android {
         }
         debug{
             buildConfigField "String", "URL_BASE", "\"https://api.themoviedb.org/3/movie/\"";
+            buildConfigField "String", "URL_BASE_IMAGE", "\"https://image.tmdb.org/t/p/w500/\"";
         }
     }
 }
@@ -41,6 +43,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //Design
+//    implementation 'com.android.support:design:24.2.1'
+
+
     //Retrofit2
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
@@ -61,8 +67,12 @@ dependencies {
     //Binding
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     //Realm
 //    implementation 'io.realm:realm-android:0.87.4'
 
+}
+repositories {
+    mavenCentral()
 }
