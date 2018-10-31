@@ -20,6 +20,15 @@ public class MovieModel extends RealmObject{
     public String original_title;
     public String backdrop_path;
     public String release_date;
+    public String overview;
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
     public MovieModel(){
 

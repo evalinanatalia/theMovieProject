@@ -1,5 +1,6 @@
 package com.example.bri.themoviesproject;
 
+import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
 
     private final static String API_KEY = "3b561a9deada4994d60aa22b621966e9";
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +62,11 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
         rows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Intent in = new Intent(MainActivity.this, DetailMovieActivity.class);
+                Bundle b = new Bundle();
+                b.putString("movie_id", pageModels.get(i).getId()+"");
+                in.putExtras(b);
+                startActivity(in);
             }
         });
 
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListingView
             }
         });
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
 

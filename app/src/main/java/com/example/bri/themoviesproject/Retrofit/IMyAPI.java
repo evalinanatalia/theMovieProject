@@ -1,10 +1,12 @@
 package com.example.bri.themoviesproject.Retrofit;
 
+import com.example.bri.themoviesproject.Model.MovieModel;
 import com.example.bri.themoviesproject.Model.PageModel;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -27,6 +29,11 @@ public interface IMyAPI {
             @Query("api_key") String api_Key
     );
 
+    @GET("{movieId}")
+    Call<MovieModel> getMovie_detail(
+            @Path("movieId") String movieId,
+            @Query("api_key") String api_Key
 
+    );
 
 }
